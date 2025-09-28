@@ -45,6 +45,36 @@ namespace PDFBackend.Controllers
             return File(result, "application/pdf", "edited.pdf");
         }
 
+        [HttpGet("export/{format}")]
+        public async Task<IActionResult> Export(string format, [FromQuery] string filePath)
+        {
+            byte[] result;
+            string contentType, fileName;
+
+            switch (format.ToLowerInvariant())
+            {
+                case "pdf":
+                    result = await _fileStorage.ReadFileAsync(filePath);
+                    contentType = "application/pdf";
+                    fileName = "document.pdf";
+                    break;
+                case "docx":
+                    result = await _pdfService.ConvertToDocxAsync(filePath);
+                    contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    fileName = "document.docx";
+                    break;
+                case "images":
+                    result = await _pdfService.ConvertToImagesZipAsync(filePath);
+                    contentType = "application/zip";
+                    fileName = "pages.zip";
+                    break;
+                default:
+                    return BadRequest("Invalid format. Use: pdf, docx, images");
+            }
+
+            await _fileStorage.DeleteFileAsync(filePath);
+            return File(result, contentType, fileName);
+        }
 
     }
 }
