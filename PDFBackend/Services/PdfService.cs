@@ -61,7 +61,27 @@ namespace PDFBackend.Services
 
         public async Task<byte[]> ConvertToImagesZipAsync(string inputPath)
         {
-     
+            var doc = new Aspose.Pdf.Document(inputPath);
+            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempDir);
+
+            var zipPath = Path.Combine(tempDir, "pages.zip");
+            using (var archive = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+            {
+                for (int i = 1; i <= doc.Pages.Count; i++)
+                {
+                    using var imageStream = new MemoryStream();
+                    var device = new Aspose.Pdf.Devices.PngDevice(new Aspose.Pdf.Devices.Resolution(150));
+                    device.Process(doc.Pages[i], imageStream);
+                    imageStream.Position = 0;
+
+                    var entry = archive.CreateEntry($"page_{i}.png");
+                    using (var entryStream = entry.Open())
+                        await imageStream.CopyToAsync(entryStream);
+                }
+            }
+
+            return await File.ReadAllBytesAsync(zipPath);
         }
 
 
