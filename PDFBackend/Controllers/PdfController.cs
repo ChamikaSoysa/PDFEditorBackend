@@ -37,6 +37,14 @@ namespace PDFBackend.Controllers
             return File(result, "application/pdf", "edited.pdf");
         }
 
+        [HttpPost("edit-metadata")]
+        public async Task<IActionResult> EditMetadata([FromForm] string filePath, [FromForm] MetadataDto metadata)
+        {
+            var result = await _pdfService.UpdatePdfMetadataAsync(filePath, metadata);
+            await _fileStorage.DeleteFileAsync(filePath);
+            return File(result, "application/pdf", "edited.pdf");
+        }
+
 
     }
 }
