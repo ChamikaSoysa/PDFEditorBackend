@@ -19,9 +19,13 @@ namespace PDFBackend.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(IFormFile file)
         {
-            return View();
+            var path = await _fileStorage.SaveFileAsync(file);
+            return Ok(new { filePath = path });
         }
+
+
     }
 }
