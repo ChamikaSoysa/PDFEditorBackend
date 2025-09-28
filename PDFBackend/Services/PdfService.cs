@@ -1,0 +1,33 @@
+﻿using PDFBackend.DTOs;
+using PDFBackend.Extensions;
+using PDFBackend.Interfaces;
+
+namespace PDFBackend.Services
+{
+    public class PdfService : IPdfService
+    {
+        public async Task<byte[]> UpdatePdfTextAsync(string inputPath, Dictionary<int, List<TextEditDto>> edits)
+        {
+            var doc = new Aspose.Pdf.Document(inputPath);
+            foreach (var (pageNum, pageEdits) in edits)
+            {
+                if (pageNum < 1 || pageNum > doc.Pages.Count) continue;
+                var page = doc.Pages[pageNum];
+                foreach (var edit in pageEdits)
+                {
+                    var textFragment = new Aspose.Pdf.Text.TextFragment(Sanitizer.SanitizeString(edit.NewText))
+                    {
+                        TextState = { FontSize = 12 },
+                        Position = new Aspose.Pdf.Text.Position(edit.X, edit.Y)
+                    };
+                    page.Paragraphs.Add(textFragment);
+                }
+            }
+            using var ms = new MemoryStream();
+            doc.Save(ms);
+            return ms.ToArray();
+
+        }
+
+    }
+}
