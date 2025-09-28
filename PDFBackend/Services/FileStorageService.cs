@@ -1,7 +1,7 @@
 ﻿using PDFBackend.Extensions;
 using PDFBackend.Interfaces;
 
-namespace PDFBackend.Services.Services
+namespace PDFBackend.Services
 {
     public class FileStorageService: IFileStorageService
     {
