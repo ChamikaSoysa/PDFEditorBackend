@@ -31,7 +31,13 @@ namespace PDFBackend.Services
 
         public async Task<byte[]> UpdatePdfMetadataAsync(string inputPath, MetadataDto metadata)
         {
-
+            var doc = new Aspose.Pdf.Document(inputPath);
+            doc.Info.Title = Sanitizer.SanitizeString(metadata.Title);
+            doc.Info.Author = Sanitizer.SanitizeString(metadata.Author);
+            doc.Info.Subject = Sanitizer.SanitizeString(metadata.Subject);
+            using var ms = new MemoryStream();
+            doc.Save(ms);
+            return ms.ToArray();
         }
 
      }
