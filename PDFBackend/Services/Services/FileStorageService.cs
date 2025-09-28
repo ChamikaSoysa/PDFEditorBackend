@@ -29,7 +29,8 @@ namespace PDFBackend.Services.Services
 
         public async Task<byte[]> ReadFileAsync(string filePath)
         {
-
+            if (!File.Exists(filePath)) throw new FileNotFoundException();
+            return await File.ReadAllBytesAsync(filePath);
         }
 
         public async Task DeleteFileAsync(string filePath)
