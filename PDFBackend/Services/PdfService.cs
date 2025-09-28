@@ -29,5 +29,10 @@ namespace PDFBackend.Services
 
         }
 
-    }
+        public async Task<byte[]> UpdatePdfMetadataAsync(string inputPath, MetadataDto metadata)
+        {
+
+        }
+
+     }
 }
