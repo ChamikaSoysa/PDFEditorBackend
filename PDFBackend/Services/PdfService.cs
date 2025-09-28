@@ -43,7 +43,20 @@ namespace PDFBackend.Services
 
         public async Task<byte[]> ConvertToDocxAsync(string inputPath)
         {
+            var pdfDoc = new Aspose.Pdf.Document(inputPath);
+            var doc = new Aspose.Words.Document();
+            var builder = new Aspose.Words.DocumentBuilder(doc);
 
+            foreach (Aspose.Pdf.Page page in pdfDoc.Pages)
+            {
+                var absorber = new Aspose.Pdf.Text.TextAbsorber();
+                page.Accept(absorber);
+                builder.Writeln(Sanitizer.SanitizeString(absorber.Text));
+            }
+
+            using var ms = new MemoryStream();
+            doc.Save(ms, Aspose.Words.SaveFormat.Docx);
+            return ms.ToArray();
         }
 
         public async Task<byte[]> ConvertToImagesZipAsync(string inputPath)
