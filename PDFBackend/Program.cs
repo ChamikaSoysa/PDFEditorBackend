@@ -1,6 +1,8 @@
 using FluentValidation.AspNetCore;
 using MediatR;
+using PDFBackend.Interfaces;
 using PDFBackend.Middlewares;
+using PDFBackend.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,9 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
+
+builder.Services.AddScoped<IPdfService, PdfService>();
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
 
 var app = builder.Build();
