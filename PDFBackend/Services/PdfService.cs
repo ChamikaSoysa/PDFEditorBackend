@@ -1,6 +1,7 @@
 ﻿using PDFBackend.DTOs;
 using PDFBackend.Extensions;
 using PDFBackend.Interfaces;
+using System.IO.Compression;
 
 namespace PDFBackend.Services
 {
@@ -40,5 +41,16 @@ namespace PDFBackend.Services
             return ms.ToArray();
         }
 
-     }
+        public async Task<byte[]> ConvertToDocxAsync(string inputPath)
+        {
+
+        }
+
+        public async Task<byte[]> ConvertToImagesZipAsync(string inputPath)
+        {
+     
+        }
+
+
+    }
 }

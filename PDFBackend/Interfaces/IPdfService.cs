@@ -7,5 +7,10 @@ namespace PDFBackend.Interfaces
         Task<byte[]> UpdatePdfTextAsync(string inputPath, Dictionary<int, List<TextEditDto>> edits);
 
         Task<byte[]> UpdatePdfMetadataAsync(string inputPath, MetadataDto metadata);
+
+        Task<byte[]> ConvertToDocxAsync(string inputPath);
+
+        Task<byte[]> ConvertToImagesZipAsync(string inputPath);
+
     }
 }
