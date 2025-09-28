@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PDFBackend.DTOs;
 using PDFBackend.Interfaces;
+using System.Text.Json;
 
 namespace PDFBackend.Controllers
 {
@@ -24,6 +26,15 @@ namespace PDFBackend.Controllers
         {
             var path = await _fileStorage.SaveFileAsync(file);
             return Ok(new { filePath = path });
+        }
+
+        [HttpPost("edit-text")]
+        public async Task<IActionResult> EditText([FromForm] string filePath, [FromForm] string editsJson)
+        {
+            var edits = JsonSerializer.Deserialize<Dictionary<int, List<TextEditDto>>>(editsJson)!;
+            var result = await _pdfService.UpdatePdfTextAsync(filePath, edits);
+            await _fileStorage.DeleteFileAsync(filePath);
+            return File(result, "application/pdf", "edited.pdf");
         }
 
 
