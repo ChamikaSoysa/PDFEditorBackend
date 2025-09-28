@@ -35,7 +35,15 @@ namespace PDFBackend.Services.Services
 
         public async Task DeleteFileAsync(string filePath)
         {
-
+            if (File.Exists(filePath))
+            {
+                var dir = Path.GetDirectoryName(filePath)!;
+                await Task.Run(() =>
+                {
+                    File.Delete(filePath);
+                    Directory.Delete(dir, true);
+                });
+            }
         }
 
     }
