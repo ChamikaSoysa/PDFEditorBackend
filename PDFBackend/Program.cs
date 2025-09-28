@@ -24,8 +24,20 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy => policy
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+    );
+});
+
 
 var app = builder.Build();
+app.Start();
+app.UseCors("AllowReactApp");
 
 if (app.Environment.IsDevelopment())
 {
