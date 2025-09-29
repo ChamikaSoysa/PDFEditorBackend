@@ -1,0 +1,7 @@
+﻿namespace PDFBackend.DTOs
+{
+    public class FilePathRequest
+    {
+        public string FilePath { get; set; } = string.Empty;
+    }
+}

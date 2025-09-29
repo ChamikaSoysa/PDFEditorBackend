@@ -66,22 +66,22 @@ namespace PDFBackend.Services
             Directory.CreateDirectory(tempDir);
 
             var zipPath = Path.Combine(tempDir, "pages.zip");
-            using (var archive = ZipFile.Open(zipPath, ZipArchiveMode.Create))
-            {
-                for (int i = 1; i <= doc.Pages.Count; i++)
+                using (var archive = ZipFile.Open(zipPath, ZipArchiveMode.Create))
                 {
-                    using var imageStream = new MemoryStream();
-                    var device = new Aspose.Pdf.Devices.PngDevice(new Aspose.Pdf.Devices.Resolution(150));
-                    device.Process(doc.Pages[i], imageStream);
-                    imageStream.Position = 0;
+                    for (int i = 1; i <= doc.Pages.Count; i++)
+                    {
+                        using var imageStream = new MemoryStream();
+                        var device = new Aspose.Pdf.Devices.PngDevice(new Aspose.Pdf.Devices.Resolution(150));
+                        device.Process(doc.Pages[i], imageStream);
+                        imageStream.Position = 0;
 
-                    var entry = archive.CreateEntry($"page_{i}.png");
-                    using (var entryStream = entry.Open())
-                        await imageStream.CopyToAsync(entryStream);
+                        var entry = archive.CreateEntry($"page_{i}.png");
+                        using (var entryStream = entry.Open())
+                            await imageStream.CopyToAsync(entryStream);
+                    }
                 }
-            }
-
-            return await File.ReadAllBytesAsync(zipPath);
+                return await File.ReadAllBytesAsync(zipPath);
+            
         }
 
 
