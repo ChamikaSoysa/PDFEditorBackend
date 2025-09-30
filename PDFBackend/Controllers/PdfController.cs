@@ -15,11 +15,11 @@ public class PdfController : ControllerBase
         _pdfService = pdfService;
     }
 
+    [RequestSizeLimit(10_000_000)] // 10MB limit
     [HttpPost("upload")]
     public async Task<IActionResult> Upload(IFormFile file)
     {
         var path = await _fileStorage.SaveFileAsync(file);
-        // Return file path AND a download URL for preview
         return Ok(new { filePath = path });
     }
 
@@ -31,18 +31,16 @@ public class PdfController : ControllerBase
     }
 
     [HttpPost("edit-text")]
-    public async Task<IActionResult> EditText([FromBody] EditTextRequest request) // ← Changed to JSON
+    public async Task<IActionResult> EditText([FromBody] EditTextRequest request) 
     {
         var result = await _pdfService.UpdatePdfTextAsync(request.FilePath, request.Edits);
-        //await _fileStorage.DeleteFileAsync(request.FilePath);
         return File(result, "application/pdf", "edited.pdf");
     }
 
     [HttpPost("edit-metadata")]
-    public async Task<IActionResult> EditMetadata([FromBody] EditMetadataRequest request) // ← JSON
+    public async Task<IActionResult> EditMetadata([FromBody] EditMetadataRequest request)
     {
         var result = await _pdfService.UpdatePdfMetadataAsync(request.FilePath, request.Metadata);
-        //await _fileStorage.DeleteFileAsync(request.FilePath);
         return File(result, "application/pdf", "edited.pdf");
     }
 
@@ -73,7 +71,6 @@ public class PdfController : ControllerBase
                 return BadRequest("Invalid format");
         }
 
-        //await _fileStorage.DeleteFileAsync(filePath);
         return File(result, contentType, fileName);
     }
 }
